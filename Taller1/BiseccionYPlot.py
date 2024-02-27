@@ -40,18 +40,27 @@ print("La raíz 3 por método de bisección es x= ",r3)
 
 
 def n(x,B,k,m):
-#    return B*(np.cosh(k*x)-np.cos(k*x) - ((np.cosh(m)-np.cos(m))/(np.sinh(m)-np.sin(m)))*(np.sinh(k*x)+np.sin(k*x)))
-    return B*(np.cosh(m)-np.cos(m))*(np.sinh(k*x)+np.sin(k*x))- (np.sinh(m)- np.sin(m))*(np.cosh(k*x)+np.cos(k*x))
+   # valorAux = (np.sinh(m) - np.sin(m))/(np.cosh(m)-np.cos(m))
 
-x = np.linspace(0,7,500)
+    #return B*(np.sinh(x) + np.sin(x) + valorAux*(np.cosh(x)+np.cos(x)))
+    valorAux1 = (np.cosh(m)-np.cos(m))
+    valorAux2 = (np.sinh(m)- np.sin(m))
+    print("Valor1: ", valorAux1)
+    print("Valo2: ", valorAux2)
+    return B*(valorAux1*(np.sinh(k*x)+np.sin(k*x))- valorAux2*(np.cosh(k*x)+np.cos(k*x)))
+
+#x = np.linspace(0,11,1000)
+
+x=np.linspace(1,10,1000) #1
+
 
 plt.style.use('seaborn-v0_8')
 
 fig, axes = plt.subplots(figsize=(6, 7))
 
-axes.plot(x, n(x,1,1,r1), '-', label=r'$f(x)$. Semilla: 1',color="cadetblue")
-axes.plot(x, n(x,1,1,r2), '-', label=r'$f(x)$. Semilla: 2',color="crimson")
-axes.plot(x, n(x,1,1,r3), '-', label=r'$f(x)$. Semilla: 3',color="black")
+axes.plot(x, n(x,1,1/2,r1), '-', label=r'$f(x)$. Semilla: 1',color="cadetblue")
+axes.plot(x, n(x,0.025,0.7,r2), '-', label=r'$f(x)$. Semilla: 2',color="crimson")
+axes.plot(x, n(x,0.00125,1,r3), '-', label=r'$f(x)$. Semilla: 3',color="black")
 
 
 
@@ -63,8 +72,8 @@ axes.grid(True, linestyle='--')
 axes.set_title("Aproximación a funciones densidad \n de probabilidad para semillas 1,2 y 5.", fontsize=14)
 axes.legend()
 plt.tight_layout()
-plt.show()
-fig.savefig('modosNormales.pdf')
+#plt.show()
+#fig.savefig('modosNormales.pdf')
 
 
 
