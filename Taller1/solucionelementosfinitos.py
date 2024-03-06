@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 #Se definen las constantes del código.
 li = 0 #Longitud inicial de estudio.
 lf= 1/2 #Longitud final de estudio.
-n=10 #Número de intervalos.
+n=5000 #Número de intervalos.
 dx = (lf - li)/n #Delta x, ancho del intervalo.
 W=1 #Peso
 L = 2*lf #Longitud total
@@ -85,4 +85,3 @@ plt.plot(xApprox,xFinal,'bo',label='Aproximada')
 plt.legend()
 plt.savefig('figura.pdf')
 
-i
