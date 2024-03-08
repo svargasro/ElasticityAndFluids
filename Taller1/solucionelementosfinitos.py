@@ -14,11 +14,17 @@ import matplotlib.pyplot as plt
 #Se definen las constantes del código.
 li = 0 #Longitud inicial de estudio.
 lf= 1/2 #Longitud final de estudio.
+<<<<<<< HEAD
 n=500 #Número de intervalos.
+=======
+n=10 #Número de intervalos.
+>>>>>>> ef519f15a5556e38dc4724233560a7a050521f13
 dx = (lf - li)/n #Delta x, ancho del intervalo.
 W=1 #Peso
 L = 2*lf #Longitud total
 F=1 #Fuerza F.
+E=1
+I=1
 
 
 #Se tiene que para n intervalos, se cumple:
@@ -28,6 +34,7 @@ tamañoMatriz = n+1
 #Se crea uns lista para almacenar las matrices.
 lMatricesLocales = [0 for _ in range(n)]
 
+#Solo se llenan esos.
 for i in range(0,n):
   matrizLocal = np.zeros((tamañoMatriz,tamañoMatriz))
   matrizLocal[i+1][i+1] = matrizLocal[i][i] = 1/dx
@@ -38,22 +45,28 @@ matricesLocales = np.array(lMatricesLocales)
 
 # print(f'{matricesLocales=}')
 
-
+#La suma de matrices locales.
 matrizGlobal = np.sum(matricesLocales, axis=0)
 
 # print(f'{matrizGlobal=}')
 
 ##############################################RHS
 
+#Función cuando va de subida.
 def subida(x,m):
   return ((-W/L)*np.power(x,2)/2 + (W+F)*x/2)*(x - m*dx)/dx
 
+#Función cuando va de bajada.
 def bajada(x,m):
   return ((-W/L)*np.power(x,2)/2 + (W+F)*x/2)*(-x + (m)*dx)/dx
 
-rhsMS = np.zeros((n+1,1))
-rhsMB = np.zeros((n+1,1))
 
+rhsMS = np.zeros((n+1,1)) #Aquí se guardan todas las integrales de funciones crecientes.
+
+rhsMB = np.zeros((n+1,1)) #Aquí se guardan todas las integrales de funciones decrecientes.
+
+#Observe que rhsMB tiene el último elemento como 0 y rhsMS tiene el primer elemento como 0.
+#Lo anterior porque no hay integral de función decreciente en el último intervalo, ni tampoco de función creciente en el primero.
 for i in range(n):
   rhsMB[i] = quad(bajada ,i*dx ,(i+1)*dx, args=((i+1),))[0]
   rhsMS[i+1] = quad(subida , i*dx,(i+1)*dx, args=(i,))[0]
@@ -61,27 +74,55 @@ for i in range(n):
 # print(f'{rhsMB=}')
 # print(f'{rhsMS=}')
 
+#Se obtiene el miembro derecho de la ecuación.
 rhsM = -(rhsMB + rhsMS)
+
+#Se reduce el sistema de ecuaciones.
 matrizGlobalReducida = matrizGlobal[1:,1:]
 rhsMReducida = rhsM[1:]
 
-# print(f'{rhsMReducida=}')
+
+#Se resuelven las n ecuaciones.
 X = np.linalg.solve(matrizGlobalReducida,rhsMReducida)
 # print(f'{np.dot(matrizGlobalReducida,X)=}')
 
-xFinal = np.insert(X,0,0)
+#Se agrega 0 en la primera entrada por condición de frontera.
+etaApprox = np.insert(X,0,0)
 
 
+#Eta Analítica.
 def etaAnalitica(x):
-  return -(W/L)*np.power(x,4)/12 + (W+F)*np.power(x,3)/12 - (W*np.power(L,2)/48 + F*np.power(L,2)/16)*x
-
+  return -(W/L)*np.power(x,4)/24 + (W+F)*np.power(x,3)/12 - (W*np.power(L,2)/24 + F*np.power(L,2)/16)*x
+#Valores de x para eta Analítica.
 xAnalitica = np.arange(0,lf,0.01)
 
-
+#Valores de x para etaAproximada.
 xApprox = np.linspace(0,lf,n+1)
 
+<<<<<<< HEAD
 plt.plot(xAnalitica, etaAnalitica(xAnalitica), label='Analítica')
 plt.plot(xApprox,xFinal,'bo',label='Aproximada')
 plt.legend()
 plt.savefig(f'Figura{n}.pdf')
+=======
+plt.style.use('seaborn-v0_8')
+>>>>>>> ef519f15a5556e38dc4724233560a7a050521f13
 
+#fig, axes = plt.subplots(3,1, figsize=(10,12))
+fig, axes = plt.subplots(figsize=(6,8))
+
+#Se grafica el tiempo de ejecución normalizado vs. tamaño de la matriz.
+axes.plot(xAnalitica, etaAnalitica(xAnalitica), label=r'$\eta(x)_{Exacta}$')
+axes.plot(xApprox, etaApprox,'bo' ,label=r'$\eta(x)_{Approx}$')
+axes.set_xlabel(r'$x$', fontsize=12)
+axes.set_ylabel(r'$\eta(x)$',fontsize=12)
+axes.legend(loc='upper left')
+axes.grid(True, linestyle='--')
+axes.set_title(r"Comparación $\eta(x)$ exacta y aproximada para n={}".format(n), fontsize=14)
+
+plt.legend()
+plt.tight_layout()
+plt.savefig("Figuras para distintos n.")
+plt.show()
+
+i
